@@ -1,44 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404 Not Found</title>
-    <!-- Include Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    />
-    <!-- This code block includes a link to the favicon. -->
-    <link rel="icon" href="{{ url_for('static',filename='logo.svg') }}" />
-    <style>
-      /* Additional Custom CSS Styles */
-      body {
-        background-color: #f8f9fa;
-      }
-      .error-container {
-        text-align: center;
-        margin-top: 100px;
-      }
-      .error-code {
-        font-size: 144px;
-        color: #343a40;
-      }
-      .error-message {
-        font-size: 24px;
-        color: #343a40;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="error-container">
-        <h1 class="error-code">404</h1>
-        <p class="error-message">
-          Oops! The page you're looking for doesn't exist.
-        </p>
-        <a href="/" class="btn btn-outline-warning">Go Back</a>
-      </div>
+{% extends "headers.html" %}
+{% block content %}
+
+<main class="about-main container">
+  <h2 class="display-4 text-center about-title">About Roam Bot</h2>
+
+  <div class="card border-primary about-card">
+    <div class="card-body">
+
+      <img
+        src="{{ url_for('static', filename='logo.svg') }}"
+        alt="Roam Bot"
+        class="about-image"
+      />
+
+      <p class="about-text">
+        <strong>Roam Bot – AI Powered Itinerary Planner</strong> is designed to simplify
+        travel planning by combining artificial intelligence with real-world travel data.
+        Our goal is to help users create meaningful, well-structured travel plans without
+        spending hours researching destinations, routes, and schedules.
+      </p>
+
+      <p class="about-text">
+        Every traveler has different preferences, budgets, and time constraints.
+        Roam Bot understands this and generates personalized itineraries that adapt to
+        individual travel needs — whether it is a solo trip, a family vacation,
+        or a group journey.
+      </p>
+
+      <p class="about-text">
+        By integrating AI-driven itinerary generation with weather insights and language
+        translation support, Roam Bot offers a smarter and more reliable travel planning
+        experience. The platform focuses on clarity, usability, and efficiency, ensuring
+        travelers can plan confidently and make informed decisions.
+      </p>
+
+      <p class="about-text">
+        Our vision is to make travel planning accessible, intelligent, and stress-free.
+        Roam Bot is built for modern travelers who value time, flexibility, and personalized
+        experiences.
+      </p>
+
+      <p class="about-text">
+        Start planning your journey with Roam Bot and experience travel preparation that
+        feels effortless and intuitive.
+      </p>
+
     </div>
-  </body>
-</html>
+  </div>
+</main>
+
+<footer class="jumbotron text-center text-white fixed-bottom" style="background-color: #030303">
+  <div class="text-center p-3">
+    <p>&copy; {{ now.year }} All rights reserved</p>
+    <p>
+      Made with Passion by
+      <a style="color: #0ed9ddd6; text-decoration: none" href="#">
+        Roam Bot – AI Powered Itinerary Planner
+      </a>
+    </p>
+  </div>
+</footer>
+
+{% endblock %}

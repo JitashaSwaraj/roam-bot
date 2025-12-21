@@ -1,0 +1,43 @@
+{% extends "headers.html" %}
+{% block content %}
+
+<main class="planner-page container">
+
+  <h1 class="planner-title">Plan Your Trip</h1>
+  <p class="planner-subtitle">
+    Tell us your journey details and let Roam-Bot build your itinerary.
+  </p>
+
+  <form method="POST" action="{{ url_for('planner') }}" class="planner-form">
+
+    <div class="form-group">
+      <label>From</label>
+      <input type="text" name="source" placeholder="City, Country" required>
+    </div>
+
+    <div class="form-group">
+      <label>To</label>
+      <input type="text" name="destination" placeholder="City, Country" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" name="start_date" required>
+      </div>
+
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" name="end_date" required>
+      </div>
+    </div>
+
+    <button type="submit" class="planner-btn">
+      Generate Itinerary
+    </button>
+
+  </form>
+
+</main>
+
+{% endblock %}

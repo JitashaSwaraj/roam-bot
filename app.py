@@ -70,76 +70,64 @@ def add_csp_header(response):
     return response
 
 # Weather Data 
-def get_weather_data(api_key: str, location: str, start_date: str, end_date: str) -> dict:
+def get_weather_data(api_key: str, city: str, start_date: str, end_date: str) -> dict | None:
     """
-    Retrieves weather data from Visual Crossing Weather API for a given location and date range.
-
-    Args:
-        api_key (str): API key for Visual Crossing Weather API.
-        location (str): Location for which weather data is to be retrieved.
-        start_date (str): Start date of the date range in "MM/DD/YYYY" format.
-        end_date (str): End date of the date range in "MM/DD/YYYY" format.
-
-    Returns:
-        dict: Weather data in JSON format.
-
-    Raises:
-        requests.exceptions.RequestException: If there is an error in making the API request.
+    Uses OpenWeather: geocode city -> One Call 3.0 daily forecast.
+    start_date/end_date unused for API query (we return daily forecast).
+    Returns dict on success or None on failure.
     """
-    # Date Formatting as per API "YYYY-MM-DD"
-
-    base_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}/{start_date}/{end_date}?unitGroup=metric&include=days&key={api_key}&contentType=json"
-
+    if not api_key:
+        return None
     try:
-        response = requests.get(base_url)
-        response.raise_for_status()
-        data = response.json()
-        # print(json.dumps(data, indent=4, sort_keys=True))
-        return data
-    except requests.exceptions.RequestException as e:
-        print("Error:", e.__str__)
-        
-@sitemapper.include() # Include the route in the sitemap
-@app.route('/', methods=["GET", "POST"])
-def index():
-    """
-    Renders the index.html template.
+        # 1) Geocode city -> lat/lon
+        geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={api_key}"
+        geo_resp = requests.get(geo_url, timeout=10)
+        geo_resp.raise_for_status()
+        geo = geo_resp.json()
+        if not geo:
+            return None
+        lat = geo[0]["lat"]
+        lon = geo[0]["lon"]
 
-    Returns:
-        The rendered index.html template.
-    """
-    if request.method == "POST":
-        global source, destination, start_date, end_date
-        source = request.form.get("source")
-        destination = request.form.get("destination")
-        start_date = request.form.get("date")
-        end_date = request.form.get("return")
-        # Calculating the number of days
-        no_of_day = (datetime.datetime.strptime(end_date, "%Y-%m-%d") - datetime.datetime.strptime(start_date, "%Y-%m-%d")).days
-        # Process the route input here
-        if no_of_day < 0:
-            flash("Return date should be greater than the Travel date (Start date).", "danger")
-            return redirect(url_for("index"))
-        else:
-            try:
-                weather_data = get_weather_data(api_key, destination, start_date, end_date)
-            except requests.exceptions.RequestException as e:
-                flash("Error in retrieving weather data.{e.Error}", "danger")
-                return redirect(url_for("index"))
+        # 2) One Call 3.0 - daily forecast
+        weather_url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=hourly,minutely,current,alerts&units=metric&appid={api_key}"
+        wresp = requests.get(weather_url, timeout=10)
+        wresp.raise_for_status()
+        return wresp.json()
+    except Exception as e:
+        # don't crash the app for weather errors
+        print("Weather fetch failed:", e)
+        return None
+
         
-        """Debugging"""
-        # Json data format printing
-        # print(json.dumps(weather_data, indent=4, sort_keys=True))
-        try:
-            plan = bard.generate_itinerary(source, destination, start_date, end_date, no_of_day)
-        except Exception as e:
-            flash("Error in generating the plan. Please try again later.", "danger")
-            return redirect(url_for("index"))
-        if weather_data:
-            # Render the weather information in the template
-            return render_template("dashboard.html", weather_data=weather_data, plan=plan)
-    
+@sitemapper.include()  # Include the route in the sitemap
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/planner", methods=["GET", "POST"])
+def planner():
+    if request.method == "POST":
+        source = request.form["source"]
+        destination = request.form["destination"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+
+        # store data in session
+        session["source"] = source
+        session["destination"] = destination
+        session["start_date"] = start_date
+        session["end_date"] = end_date
+
+        return redirect(url_for("dashboard"))
+
+    return render_template("planner.html")
+
+
+
+    # GET -> show form
     return render_template('index.html')
+
 
 @sitemapper.include() # Include the route in the sitemap
 @app.route("/about")
@@ -284,7 +272,19 @@ def page_not_found(e):
     """
     return render_template('404.html'), 404
 
+@app.template_filter('datetimeformat')
+def datetimeformat(value):
+    import datetime as _dt
+    try:
+        return _dt.datetime.fromtimestamp(int(value)).strftime('%Y-%m-%d')
+    except:
+        return value
+
+
 # Injecting current time into all templates for copyright year automatically updation
 @app.context_processor
 def inject_now():
     return {'now': datetime.datetime.now()}
+
+if __name__ == "__main__":
+    app.run(debug=True)
