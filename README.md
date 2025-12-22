@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Roam Bot – AI-Powered Travel Itinerary Planner
 
 Roam Bot is a Flask-based web application that generates personalized travel itineraries using AI.
@@ -41,3 +42,6 @@ Users can input their source, destination, and travel dates to receive a multi-d
 ## 📂 Project Structure
 
 
+=======
+
+>>>>>>> b0112cf5d540fe4bb24edf57d955782df22b4229
