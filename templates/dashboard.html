@@ -5,9 +5,13 @@
 
   <!-- Weather Section -->
   <section class="weather-section container">
-    <h2 class="section-title">🌤 Weather Forecast</h2>
+    <h2>Weather Forecast</h2>
 
-    {% if weather_data and weather_data.get('daily') %}
+{% if weather %}
+  <p>Weather data available for {{ destination }}</p>
+{% else %}
+  <p>Weather data not available.</p>
+{% endif %}
       <p class="location-text">
         Showing forecast for your selected destination
       </p>
@@ -45,15 +49,13 @@
 
   <!-- Itinerary Section -->
   <section class="itinerary-section container">
-    <h2 class="section-title">🧭 Your AI-Generated Itinerary</h2>
+    <h2>Your AI-Generated Itinerary<h2>
+    <div class="itinerary-card">
+  <pre style="white-space: pre-wrap;">
+{{ itinerary }}
+  </pre>
+</div>
 
-    <p class="note-text">
-      This itinerary is AI-generated. You may adjust activities based on personal preference.
-    </p>
-
-    <div id="markdown-content" class="itinerary-card">
-      {{ plan }}
-    </div>
   </section>
 
   <!-- CTA Section -->

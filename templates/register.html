@@ -1,58 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Register | Roam-Bot</title>
+{% extends "headers.html" %}
+{% block content %}
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
+<main class="auth-body">
 
-<body class="auth-body">
+  <div class="auth-card" style="width:420px">
 
-  <div class="auth-card">
     <div class="auth-header">
       <h1>Create Account</h1>
-      <p>Join Roam-Bot and plan smarter journeys</p>
+      <p>Join Roam-Bot and start planning smarter journeys</p>
     </div>
 
+    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% for category, message in messages %}
-        <div class="flash alert-{{ category }}">{{ message }}</div>
-      {% endfor %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
     {% endwith %}
 
-    <form method="POST" action="/register" class="auth-form">
+    <form method="POST" class="auth-form">
 
+      <!-- Full Name -->
       <div class="input-group">
-        <i class="fa fa-user"></i>
-        <input type="text" name="name" placeholder="Full Name" required>
+        <i class="fa-solid fa-user"></i>
+        <input
+          type="text"
+          name="name"
+          placeholder="Full name"
+          required
+        />
       </div>
 
+      <!-- Email -->
       <div class="input-group">
-        <i class="fa fa-envelope"></i>
-        <input type="email" name="email" placeholder="Email address" required>
+        <i class="fa-solid fa-envelope"></i>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email address"
+          required
+        />
       </div>
 
+      <!-- Password -->
       <div class="input-group">
-        <i class="fa fa-lock"></i>
-        <input type="password" name="password" placeholder="Password" required>
+        <i class="fa-solid fa-lock"></i>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
       </div>
 
+      <!-- Confirm Password -->
       <div class="input-group">
-        <i class="fa fa-lock"></i>
-        <input type="password" name="password2" placeholder="Confirm Password" required>
+        <i class="fa-solid fa-lock"></i>
+        <input
+          type="password"
+          name="password2"
+          placeholder="Confirm password"
+          required
+        />
       </div>
 
-      <button type="submit" class="auth-btn">Register</button>
+      <button type="submit" class="auth-btn">
+        Sign Up
+      </button>
 
       <div class="switch">
         Already have an account?
-        <a href="/login">Login</a>
+        <a href="{{ url_for('login') }}">Login</a>
       </div>
 
     </form>
   </div>
 
-</body>
-</html>
+</main>
+
+{% endblock %}

@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Translator | Roam-Bot</title>
+{% extends "headers.html" %}
+{% block content %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
+<section class="auth-body translator-wrapper">
+  <div class="auth-card translator-card">
 
-<body class="auth-body">
-
-  <div class="auth-card" style="width:420px">
     <div class="auth-header">
       <h1>Translator</h1>
       <p>Translate your travel text instantly</p>
@@ -17,11 +11,17 @@
 
     <form method="POST" class="auth-form">
 
+      <!-- Text input -->
       <div class="input-group">
-        <textarea name="text" rows="4" placeholder="Enter text to translate"
-          style="width:100%; border-radius:14px; padding:12px;"></textarea>
+        <textarea
+          name="text"
+          rows="4"
+          placeholder="Enter text to translate"
+          required
+        ></textarea>
       </div>
 
+      <!-- Language selectors -->
       <div class="form-row">
         <select name="src_lang" class="form-control">
           <option value="auto">Auto Detect</option>
@@ -36,8 +36,12 @@
         </select>
       </div>
 
-      <button class="auth-btn" style="margin-top:15px">Translate</button>
+      <!-- Submit -->
+      <button type="submit" class="auth-btn">
+        Translate
+      </button>
 
+      <!-- Result -->
       {% if translated_text %}
         <div class="itinerary-card" style="margin-top:15px">
           {{ translated_text }}
@@ -45,7 +49,8 @@
       {% endif %}
 
     </form>
-  </div>
 
-</body>
-</html>
+  </div>
+</section>
+
+{% endblock %}

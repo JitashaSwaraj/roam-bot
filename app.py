@@ -5,7 +5,8 @@ from flask_sitemapper import Sitemapper
 import bcrypt
 import requests
 import datetime
-import bard,os
+import bard
+import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from deep_translator import GoogleTranslator
@@ -98,26 +99,45 @@ def get_weather_data(api_key: str, city: str, start_date: str, end_date: str) ->
         # don't crash the app for weather errors
         print("Weather fetch failed:", e)
         return None
+    
+def generate_itinerary_ai(source, destination, start_date, end_date):
+    prompt = f"""
+    Create a detailed travel itinerary.
+
+    From: {source}
+    Destination: {destination}
+    Start Date: {start_date}
+    End Date: {end_date}
+
+    Requirements:
+    - Day-wise plan
+    - Morning / Afternoon / Evening activities
+    - Include food suggestions
+    - Keep it realistic and concise
+    """
+
+    try:
+        response = bard.ask(prompt)
+        return response.get("content", "AI failed to generate itinerary.")
+    except Exception as e:
+        print("AI error:", e)
+        return "AI itinerary generation failed."
+
 
         
 @sitemapper.include()  # Include the route in the sitemap
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
+
 
 @app.route("/planner", methods=["GET", "POST"])
 def planner():
     if request.method == "POST":
-        source = request.form["source"]
-        destination = request.form["destination"]
-        start_date = request.form["start_date"]
-        end_date = request.form["end_date"]
-
-        # store data in session
-        session["source"] = source
-        session["destination"] = destination
-        session["start_date"] = start_date
-        session["end_date"] = end_date
+        session["source"] = request.form["source"]
+        session["destination"] = request.form["destination"]
+        session["start_date"] = request.form["start_date"]
+        session["end_date"] = request.form["end_date"]
 
         return redirect(url_for("dashboard"))
 
@@ -125,8 +145,6 @@ def planner():
 
 
 
-    # GET -> show form
-    return render_template('index.html')
 
 
 @sitemapper.include() # Include the route in the sitemap
@@ -279,6 +297,56 @@ def datetimeformat(value):
         return _dt.datetime.fromtimestamp(int(value)).strftime('%Y-%m-%d')
     except:
         return value
+    
+
+@app.route("/dashboard")
+def dashboard():
+    try:
+        source = session.get("source")
+        destination = session.get("destination")
+        start_date = session.get("start_date")
+        end_date = session.get("end_date")
+
+        # HARD SAFETY CHECK
+        if not all([source, destination, start_date, end_date]):
+            flash("Please generate itinerary again.", "warning")
+            return redirect(url_for("planner"))
+
+        # calculate number of days
+        start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+        no_of_day = (end - start).days + 1
+
+        itinerary = bard.generate_itinerary(
+            source,
+            destination,
+            start_date,
+            end_date,
+            no_of_day
+        )
+
+        weather = get_weather_data(
+            api_key,
+            destination,
+            start_date,
+            end_date
+        )
+
+        return render_template(
+            "dashboard.html",
+            itinerary=itinerary,
+            weather=weather,
+            destination=destination
+        )
+
+    except Exception as e:
+        print("Dashboard Error:", e)
+        flash("Something went wrong. Please try again later.", "danger")
+        return redirect(url_for("planner"))
+
+
+
+
 
 
 # Injecting current time into all templates for copyright year automatically updation

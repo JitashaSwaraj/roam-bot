@@ -110,20 +110,28 @@ main {
 
 
 .about-title {
-  margin-bottom: 40px;
+  margin-bottom: 70px;
   font-weight: 600;
 }
 
 .about-card {
-  background: #ffffff;
-  border-left: 6px solid #ffffff;
+  position: relative;
   border-radius: 16px;
-  padding: 20px;
-  /* BACKGROUND IMAGE */
-  background-image: url("../about.jpg");
-  background-size: cover;
+  padding: 40px;
+
+  /* Image + soft overlay */
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.85),
+      rgba(255, 255, 255, 0.85)
+    ),
+    url("../about.jpg");
+
+  background-size: 25%;        /* 👈 FIX */
   background-position: center;
   background-repeat: no-repeat;
+
+  overflow: hidden;
 }
 
 
@@ -139,6 +147,7 @@ main {
   font-size: 17px;
   line-height: 1.7;
   margin-bottom: 16px;
+  color: #1e2124; 
 }
 
 
@@ -146,7 +155,7 @@ main {
 @media (max-width: 768px) {
   .about-image {
     float: none;
-    width: 100%;
+    width: 80%;
     margin: 20px 0;
   }
 }
@@ -465,7 +474,6 @@ main {
   opacity: 0.8;
 }
 
-/* Optional highlight for Sign Up (NO box, NO blue bg) */
 .nav-auth-link.signup {
   font-weight: 500;
 }
@@ -544,6 +552,7 @@ main {
   font-size: 36px;
   font-weight: 700;
   margin-bottom: 10px;
+  color: #000000
 }
 
 .planner-subtitle {
@@ -555,7 +564,7 @@ main {
   background: rgba(255,255,255,0.95);
   padding: 30px;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .planner-form label {
@@ -590,4 +599,52 @@ main {
 
 .planner-btn:hover {
   background: #537893;
+}
+
+
+
+/* ---------- Translator Inputs ---------- */
+
+/* textarea */
+.auth-form textarea {
+  width: 100%;
+  height: 120px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  background: #ffffff;
+}
+
+/* focus effect */
+.auth-form textarea:focus {
+  border-color: #5b7f99;
+  box-shadow: 0 0 0 2px rgba(91, 127, 153, 0.2);
+}
+
+/* language dropdowns */
+.auth-form select {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  padding: 0 12px;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+/* align selects nicely */
+.auth-form .form-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* select focus */
+.auth-form select:focus {
+  border-color: #5b7f99;
+  box-shadow: 0 0 0 2px rgba(91, 127, 153, 0.2);
+  outline: none;
 }
