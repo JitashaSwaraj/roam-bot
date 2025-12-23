@@ -21,9 +21,9 @@ Users can input their source, destination, and travel dates to receive a multi-d
 ![Itinerary](screenshots/itenerary.png)
 
 ### 🗺️ Generated Itinerary
-![Result](screenshots/generated it1.png)
-![Result](screenshots/generated it2.png)
-![Result](screenshots/generated it3.png)
+![Result](screenshots/generated1.png)
+![Result](screenshots/generated2.png)
+![Result](screenshots/generated3.png)
 
 
 
