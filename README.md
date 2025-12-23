@@ -20,6 +20,14 @@ Users can input their source, destination, and travel dates to receive a multi-d
 ### 🗺️ Itinerary Generation
 ![Itinerary](screenshots/itenerary.png)
 
+### 🗺️ Generated Itinerary
+![Result](screenshots/generated it1.png)
+![Result](screenshots/generated it2.png)
+![Result](screenshots/generated it3.png)
+
+
+
+
 ### 🌐 Language Translator
 ![Translator](screenshots/translate.png)
 

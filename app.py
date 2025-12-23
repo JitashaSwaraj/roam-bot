@@ -99,30 +99,6 @@ def get_weather_data(api_key: str, city: str, start_date: str, end_date: str) ->
         # don't crash the app for weather errors
         print("Weather fetch failed:", e)
         return None
-    
-def generate_itinerary_ai(source, destination, start_date, end_date):
-    prompt = f"""
-    Create a detailed travel itinerary.
-
-    From: {source}
-    Destination: {destination}
-    Start Date: {start_date}
-    End Date: {end_date}
-
-    Requirements:
-    - Day-wise plan
-    - Morning / Afternoon / Evening activities
-    - Include food suggestions
-    - Keep it realistic and concise
-    """
-
-    try:
-        response = bard.ask(prompt)
-        return response.get("content", "AI failed to generate itinerary.")
-    except Exception as e:
-        print("AI error:", e)
-        return "AI itinerary generation failed."
-
 
         
 @sitemapper.include()  # Include the route in the sitemap
@@ -318,11 +294,11 @@ def dashboard():
         no_of_day = (end - start).days + 1
 
         itinerary = bard.generate_itinerary(
-            source,
-            destination,
-            start_date,
-            end_date,
-            no_of_day
+         source,
+         destination,
+         start_date,
+         end_date,
+         no_of_day
         )
 
         weather = get_weather_data(
@@ -340,10 +316,12 @@ def dashboard():
         )
 
     except Exception as e:
-        print("Dashboard Error:", e)
-        flash("Something went wrong. Please try again later.", "danger")
-        return redirect(url_for("planner"))
-
+     return render_template(
+        "dashboard.html",
+        itinerary=f"⚠️ AI Error: {e}",
+        weather=None,
+        destination=session.get("destination")
+    )
 
 
 

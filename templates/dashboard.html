@@ -1,83 +1,32 @@
 {% extends "headers.html" %}
 {% block content %}
 
-<main class="dashboard-page">
+<main class="dashboard-page container">
 
-  <!-- Weather Section -->
-  <section class="weather-section container">
+  <h1>Your AI-Generated Itinerary</h1>
+
+  <!-- ITINERARY SECTION -->
+  {% if itinerary %}
+    <section class="itinerary-section">
+      <div class="itinerary-card">
+        <pre style="white-space: pre-wrap;">{{ itinerary }}</pre>
+      </div>
+    </section>
+  {% else %}
+    <p>No itinerary available.</p>
+  {% endif %}
+
+  <!-- WEATHER SECTION -->
+  <section class="weather-section">
     <h2>Weather Forecast</h2>
 
-{% if weather %}
-  <p>Weather data available for {{ destination }}</p>
-{% else %}
-  <p>Weather data not available.</p>
-{% endif %}
-      <p class="location-text">
-        Showing forecast for your selected destination
-      </p>
-
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover weather-table">
-          <thead class="table-dark">
-            <tr>
-              <th>Date</th>
-              <th>Condition</th>
-              <th>Max (°C)</th>
-              <th>Min (°C)</th>
-              <th>Rain %</th>
-              <th>Humidity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for day in weather_data['daily'] %}
-            <tr>
-              <td>{{ day['dt'] | datetimeformat }}</td>
-              <td>{{ day['weather'][0]['description'] | capitalize }}</td>
-              <td>{{ day['temp']['max'] }}</td>
-              <td>{{ day['temp']['min'] }}</td>
-              <td>{{ (day.get('pop', 0) * 100) | round }}%</td>
-              <td>{{ day['humidity'] }}%</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    {% if weather %}
+      <p>Weather data available for {{ destination }}</p>
     {% else %}
-      <p class="text-muted">Weather data not available.</p>
+      <p>Weather data not available.</p>
     {% endif %}
   </section>
 
-  <!-- Itinerary Section -->
-  <section class="itinerary-section container">
-    <h2>Your AI-Generated Itinerary<h2>
-    <div class="itinerary-card">
-  <pre style="white-space: pre-wrap;">
-{{ itinerary }}
-  </pre>
-</div>
-
-  </section>
-
-  <!-- CTA Section -->
-  <section class="cta-section container text-center">
-    <h5>✈ Plan Your Stay & Flights</h5>
-    <a href="https://www.booking.com" target="_blank" class="btn btn-outline-primary">
-      Explore Hotels & Flights
-    </a>
-  </section>
-
 </main>
-
-<footer class="footer">
-  <p>&copy; {{ now.year }} Roam-Bot — AI Powered Itinerary Planner</p>
-</footer>
-
-<!-- Markdown -->
-<script src="https://cdn.jsdelivr.net/npm/markdown-it@11.0.1/dist/markdown-it.min.js"></script>
-<script>
-  const md = window.markdownit();
-  const content = document.getElementById("markdown-content");
-  content.innerHTML = md.render(content.textContent);
-</script>
 
 {% endblock %}
